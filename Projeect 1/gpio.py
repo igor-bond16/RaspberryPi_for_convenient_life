@@ -1,14 +1,12 @@
-import httplib2, os
+import os,httplib2
 from apiclient import discovery
 import g_oauth 
-import schedule
 import time
-import requests
-import picamera
 from datetime import datetime
 import picamera
+import requests
 
-token = 'Your Token'
+token = 'IhasYqcdnRWfA3ialbX9ohO6Uie4U5eBvcDjP1aVBc5'
 
 def gmail_get_service():
     credentials = g_oauth.gmail_user_auth()
@@ -21,7 +19,7 @@ mail_list = []
 def gmail_get_messages():
     service = gmail_get_service()
     messages = service.users().messages()
-    msg_list = messages.list(userId='me', maxResults=10).execute()
+    msg_list = messages.list(userId='me', maxResults=1).execute()
     for msg in msg_list['messages']:
         topid = msg['id']
         msg = messages.get(userId='me', id=topid).execute()
@@ -33,21 +31,22 @@ def gmail_get_messages():
 
 def send_msg():
     filename = datetime.now()
-    with camera.PiCamera() as camera:
+    with picamera.PiCamera() as camera:
         camera.resolution = (1024,768)
-        camera.capture(filename+'.jpg')
+        camera.capture(str(filename)+'.jpg')
 
     url = 'https://notify-api.line.me/api/notify'
     headers = {'Authorization':'Bearer '+token}
     data = {"message":"Here is your room."}
-    img = f'/home/igor-bond/Desktop/{filename}.jpg'
+    img = f'/home/pi/Desktop/RaspberryPi_for_convenient_life/Projeect 1/{filename}.jpg'
     file = {'imageFile': open(img, 'rb')}
     r = requests.post(url, headers=headers, params=data, files=file,)
-
             
 
-schedule.every(1).minutes.do(gmail_get_messages)
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+run = True
+while run:
+    try:
+        time.sleep(30)
+        gmail_get_messages()
+    except KeyboardInterrupt:
+        run = False
