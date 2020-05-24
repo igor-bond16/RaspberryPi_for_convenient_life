@@ -6,7 +6,7 @@ from datetime import datetime
 import picamera
 import requests
 
-token = 'IhasYqcdnRWfA3ialbX9ohO6Uie4U5eBvcDjP1aVBc5'
+token = 'Your Token'
 
 def gmail_get_service():
     credentials = g_oauth.gmail_user_auth()
